@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
@@ -6,8 +6,13 @@ import { store } from '@/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loadStoredData } from '@/store/weatherSlice';
 import { Platform } from 'react-native';
+import { ThemeProvider } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function RootLayout() {
+  const { theme } = useTheme();
+    const isDarkMode = theme === 'dark';
+
   useEffect(() => {
     loadStoredState();
   }, []);
@@ -32,21 +37,24 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <Stack screenOptions={{ 
-        headerShown: false,
-        animation: Platform.OS === 'android' ? 'fade' : 'default'
-      }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen 
-          name="+not-found" 
-          options={{
-            presentation: 'modal',
-            headerShown: true,
-            title: 'Not Found'
-          }}
-        />
-      </Stack>
-      <StatusBar style="auto" />
+      <ThemeProvider>
+        <Stack screenOptions={{ 
+          headerShown: false,
+          animation: Platform.OS === 'android' ? 'fade' : 'default'
+        }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen 
+            name="+not-found" 
+            options={{
+              presentation: 'modal',
+              headerShown: true,
+              title: 'Not Found'
+            }}
+          />
+        </Stack>
+        {/* <StatusBar style="auto" /> */}
+      <StatusBar style={isDarkMode ? 'dark' : 'light'} />
+      </ThemeProvider>
     </Provider>
   );
 }

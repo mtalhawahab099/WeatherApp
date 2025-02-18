@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleFavorite } from '@/store/weatherSlice';
 import { RootState } from '@/store';
 import Colors from '@/constants/Colors';
-import { useColorScheme } from 'react-native';
 import Animated, { FadeIn, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { useTheme } from '@/context/ThemeContext';
 
 interface WeatherData {
   id: number;
@@ -26,7 +26,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const WeatherCard = memo(({ data, onPress }: Props) => {
   const dispatch = useDispatch();
-  const colorScheme = useColorScheme();
+  const { theme } = useTheme();
   const { useCelsius, favorites } = useSelector((state: RootState) => state.weather);
   const isFavorite = favorites.some(f => f.id === data.id);
 
@@ -63,7 +63,7 @@ const WeatherCard = memo(({ data, onPress }: Props) => {
         style={[
           styles.card,
           {
-            backgroundColor: Colors[colorScheme ?? 'light'].weatherBackground[data.weather as keyof typeof Colors.light.weatherBackground],
+            backgroundColor: Colors[theme ?? 'light'].weatherBackground[data.weather as keyof typeof Colors.light.weatherBackground],
           },
           animatedStyle,
         ]}>

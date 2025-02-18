@@ -6,11 +6,9 @@ import {
   FlatList,
   Text,
   Switch,
-  useColorScheme,
   ActivityIndicator,
   Platform,
   RefreshControl,
-  Alert,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentWeather, toggleTemperatureUnit } from '@/store/weatherSlice';
@@ -19,6 +17,7 @@ import WeatherCard from '@/components/WeatherCard';
 import Colors from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function WeatherScreen() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,11 +26,11 @@ export default function WeatherScreen() {
   const [refreshing, setRefreshing] = useState(false);
   
   const dispatch = useDispatch();
-  const colorScheme = useColorScheme();
   const flatListRef = useRef<FlatList>(null);
   const { currentWeather, recentSearches, useCelsius } = useSelector(
     (state: RootState) => state.weather
   );
+  const { theme } = useTheme();
 
   const searchCity = useCallback(async (query: string) => {
     if (!query.trim()) return;
@@ -39,13 +38,10 @@ export default function WeatherScreen() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://192.168.100.202:3000/cities?city_like=${(query)}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      const response = await fetch(`http://192.168.43.216:3000/cities?city_like=${query}`);
+      if (!response.ok) throw new Error('Network response was not ok');
       
       const data = await response.json();
-      
       if (data.length > 0) {
         dispatch(setCurrentWeather(data[0]));
         setSearchQuery('');
@@ -54,8 +50,7 @@ export default function WeatherScreen() {
         setError('City not found. Please try another city name.');
       }
     } catch (err) {
-      console.error('API Error:', err);
-      setError('Failed to fetch weather data. Please make sure json-server is running.');
+      setError('Failed to fetch weather data. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -84,26 +79,26 @@ export default function WeatherScreen() {
       entering={FadeIn}
       style={[
         styles.container,
-        { backgroundColor: Colors[colorScheme ?? 'light'].background }
+        { backgroundColor: Colors[theme ?? 'light'].background }
       ]}>
       <View style={styles.header}>
         <View style={[
           styles.searchContainer,
-          { backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#f0f0f0' }
+          { backgroundColor: theme === 'dark' ? '#1a1a1a' : '#f0f0f0' }
         ]}>
           <Ionicons
             name="search"
             size={20}
-            color={Colors[colorScheme ?? 'light'].text}
+            color={Colors[theme ?? 'light'].text}
             style={styles.searchIcon}
           />
           <TextInput
             style={[
               styles.searchInput,
-              { color: Colors[colorScheme ?? 'light'].text }
+              { color: Colors[theme ?? 'light'].text }
             ]}
             placeholder="Search city..."
-            placeholderTextColor={colorScheme === 'dark' ? '#666' : '#999'}
+            placeholderTextColor={theme === 'dark' ? '#666' : '#999'}
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={() => searchCity(searchQuery)}
@@ -116,7 +111,7 @@ export default function WeatherScreen() {
         <View style={styles.unitToggle}>
           <Text style={[
             styles.unitText,
-            { color: Colors[colorScheme ?? 'light'].text }
+            { color: Colors[theme ?? 'light'].text }
           ]}>°C</Text>
           <Switch
             value={!useCelsius}
@@ -129,7 +124,7 @@ export default function WeatherScreen() {
           />
           <Text style={[
             styles.unitText,
-            { color: Colors[colorScheme ?? 'light'].text }
+            { color: Colors[theme ?? 'light'].text }
           ]}>°F</Text>
         </View>
       </View>
@@ -138,7 +133,7 @@ export default function WeatherScreen() {
         <View style={styles.centered}>
           <ActivityIndicator 
             size="large" 
-            color={Colors[colorScheme ?? 'light'].tint} 
+            color={Colors[theme ?? 'light'].tint} 
           />
         </View>
       )}
@@ -169,8 +164,8 @@ export default function WeatherScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor={Colors[colorScheme ?? 'light'].tint}
-            colors={[Colors[colorScheme ?? 'light'].tint]}
+            tintColor={Colors[theme ?? 'light'].tint}
+            colors={[Colors[theme ?? 'light'].tint]}
           />
         }
         ListEmptyComponent={
@@ -179,11 +174,11 @@ export default function WeatherScreen() {
               <Ionicons 
                 name="search" 
                 size={50} 
-                color={Colors[colorScheme ?? 'light'].text} 
+                color={Colors[theme ?? 'light'].text} 
               />
               <Text style={[
                 styles.emptyText,
-                { color: Colors[colorScheme ?? 'light'].text }
+                { color: Colors[theme ?? 'light'].text }
               ]}>
                 Search for a city to see the weather
               </Text>

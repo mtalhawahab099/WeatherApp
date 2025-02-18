@@ -1,24 +1,25 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Text, useColorScheme } from 'react-native';
+import { View, StyleSheet, FlatList, Text, } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import WeatherCard from '@/components/WeatherCard';
 import Colors from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function FavoritesScreen() {
-  const colorScheme = useColorScheme();
   const { favorites } = useSelector((state: RootState) => state.weather);
+  const { theme } = useTheme();
 
   if (favorites.length === 0) {
     return (
       <View style={[
         styles.container,
-        { backgroundColor: Colors[colorScheme ?? 'light'].background }
+        { backgroundColor: Colors[theme ?? 'light'].background }
       ]}>
         <View style={styles.emptyState}>
           <Text style={[
             styles.emptyStateText,
-            { color: Colors[colorScheme ?? 'light'].text }
+            { color: Colors[theme ?? 'light'].text }
           ]}>
             No favorite cities yet.{'\n'}Add some from the weather screen!
           </Text>
@@ -30,7 +31,7 @@ export default function FavoritesScreen() {
   return (
     <View style={[
       styles.container,
-      { backgroundColor: Colors[colorScheme ?? 'light'].background }
+      { backgroundColor: Colors[theme ?? 'light'].background }
     ]}>
       <FlatList
         data={favorites}
