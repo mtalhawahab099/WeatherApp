@@ -1,0 +1,54 @@
+{
+  "cities": [
+    {
+      "id": 1,
+      "city": "New York",
+      "temperature": 18,
+      "weather": "Cloudy",
+      "humidity": 65,
+      "windSpeed": 10,
+      "lat": 40.7128,
+      "lon": -74.0060
+    },
+    {
+      "id": 2,
+      "city": "London",
+      "temperature": 12,
+      "weather": "Rainy",
+      "humidity": 80,
+      "windSpeed": 15,
+      "lat": 51.5074,
+      "lon": -0.1278
+    },
+    {
+      "id": 3,
+      "city": "Dubai",
+      "temperature": 35,
+      "weather": "Sunny",
+      "humidity": 20,
+      "windSpeed": 5,
+      "lat": 25.2048,
+      "lon": 55.2708
+    },
+    {
+      "id": 4,
+      "city": "Tokyo",
+      "temperature": 22,
+      "weather": "Partly Cloudy",
+      "humidity": 55,
+      "windSpeed": 8,
+      "lat": 35.6762,
+      "lon": 139.6503
+    },
+    {
+      "id": 5,
+      "city": "Sydney",
+      "temperature": 25,
+      "weather": "Sunny",
+      "humidity": 45,
+      "windSpeed": 12,
+      "lat": -33.8688,
+      "lon": 151.2093
+    }
+  ]
+}

@@ -1,39 +1,60 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { Provider } from 'react-redux';
+import { store } from '@/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loadStoredData } from '@/store/weatherSlice';
+import { Platform } from 'react-native';
+import { ThemeProvider } from '@/context/ThemeContext';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const { theme } = useTheme();
+    const isDarkMode = theme === 'dark';
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    loadStoredState();
+  }, []);
 
-  if (!loaded) {
-    return null;
-  }
+  const loadStoredState = async () => {
+    try {
+      const [recentSearches, favorites, useCelsius] = await Promise.all([
+        AsyncStorage.getItem('recentSearches'),
+        AsyncStorage.getItem('favorites'),
+        AsyncStorage.getItem('useCelsius'),
+      ]);
+
+      store.dispatch(loadStoredData({
+        recentSearches: recentSearches ? JSON.parse(recentSearches) : [],
+        favorites: favorites ? JSON.parse(favorites) : [],
+        useCelsius: useCelsius ? JSON.parse(useCelsius) : true,
+      }));
+    } catch (error) {
+      console.error('Error loading stored state:', error);
+    }
+  };
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <Stack screenOptions={{ 
+          headerShown: false,
+          animation: Platform.OS === 'android' ? 'fade' : 'default'
+        }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen 
+            name="+not-found" 
+            options={{
+              presentation: 'modal',
+              headerShown: true,
+              title: 'Not Found'
+            }}
+          />
+        </Stack>
+        {/* <StatusBar style="auto" /> */}
+      <StatusBar style={isDarkMode ? 'dark' : 'light'} />
+      </ThemeProvider>
+    </Provider>
   );
 }

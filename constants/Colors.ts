@@ -1,26 +1,37 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-const tintColorLight = '#0a7ea4';
+const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
 
-export const Colors = {
+export default {
   light: {
-    text: '#11181C',
+    text: '#000',
     background: '#fff',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    mapLoaderColor: tintColorLight,
+    tabIconDefault: '#ccc',
     tabIconSelected: tintColorLight,
+    tabBackgroundColor: '#FFFFFF',
+    tabLabelColor: '#000000',
+    weatherBackground: {
+      Sunny: '#FFD700',
+      Cloudy: '#A9A9A9',
+      Rainy: '#4682B4',
+      'Partly Cloudy': '#B8B8B8',
+    },
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#fff',
+    background: '#000',
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    mapLoaderColor: '#ccc',
+    tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
+    tabBackgroundColor: '#1E1E1E',
+    tabLabelColor: '#FFFFFF',
+    weatherBackground: {
+      Sunny: '#B8860B',
+      Cloudy: '#696969',
+      Rainy: '#27408B',
+      'Partly Cloudy': '#708090',
+    },
   },
 };
